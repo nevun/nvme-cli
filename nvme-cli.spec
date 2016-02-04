@@ -3,7 +3,7 @@
 
 Name:           nvme-cli
 Version:        0.2
-Release:        2.20160112git%{shortcommit0}%{?dist}
+Release:        3.20160112git%{shortcommit0}%{?dist}
 Summary:        NVMe management command line interface
 
 License:        GPLv2+
@@ -35,6 +35,9 @@ make PREFIX=/usr CFLAGS="%{optflags}" LDFLAGS="%{__global_ldflags}" %{?_smp_mfla
 
 
 %changelog
+* Thu Feb 04 2016 Fedora Release Engineering <releng@fedoraproject.org> - 0.2-3.20160112gitbdbb4da
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
+
 * Wed Jan 20 2016 luto@kernel.org - 0.2-2.20160112gitbdbb4da
 - Update to new upstream commit, fixing #49.  "nvme list" now works.
 
