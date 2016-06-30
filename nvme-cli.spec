@@ -34,6 +34,7 @@ make PREFIX=/usr CFLAGS="%{optflags}" LDFLAGS="%{__global_ldflags}" %{?_smp_mfla
 %doc README.md
 %{_sbindir}/nvme
 %{_mandir}/man1/nvme*.gz
+%{_sysconfdir}/bash_completion.d/nvme
 
 
 %changelog
