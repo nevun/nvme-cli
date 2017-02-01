@@ -2,8 +2,8 @@
 #%global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 Name:           nvme-cli
-Version:        1.0
-Release:        2%{?dist}
+Version:        1.1
+Release:        1%{?dist}
 Summary:        NVMe management command line interface
 
 License:        GPLv2+
@@ -38,6 +38,9 @@ make PREFIX=/usr CFLAGS="%{optflags}" LDFLAGS="%{__global_ldflags}" %{?_smp_mfla
 
 
 %changelog
+* Wed Feb 01 2017 luto@kernel.org - 1.1-1
+- Update to 1.1
+
 * Sun Nov 20 2016 luto@kernel.org - 1.0-1
 - Update to 1.0
 
