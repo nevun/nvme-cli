@@ -2,7 +2,7 @@
 #%global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 Name:           nvme-cli
-Version:        1.1
+Version:        1.2
 Release:        2%{?dist}
 Summary:        NVMe management command line interface
 
@@ -10,6 +10,8 @@ License:        GPLv2+
 URL:            https://github.com/linux-nvme/nvme-cli
 #Source0:        https://github.com/linux-nvme/%{name}/archive/%{commit0}.tar.gz
 Source0:        https://github.com/linux-nvme/%{name}/archive/v%{version}.tar.gz
+
+BuildRequires:	libuuid-devel
 
 %description
 nvme-cli provides NVM-Express user space tooling for Linux.
@@ -32,10 +34,13 @@ make PREFIX=/usr CFLAGS="%{optflags}" LDFLAGS="%{__global_ldflags}" %{?_smp_mfla
 %doc README.md
 %{_sbindir}/nvme
 %{_mandir}/man1/nvme*.gz
-%{_sysconfdir}/bash_completion.d/nvme
+%{_datadir}/bash_completion.d/nvme
 
 
 %changelog
+* Wed Apr 19 2017 luto@kernel.org - 1.2-1
+- Update to 1.2
+
 * Sat Feb 11 2017 Fedora Release Engineering <releng@fedoraproject.org> - 1.1-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
 
