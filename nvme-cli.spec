@@ -2,8 +2,8 @@
 #%global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 Name:           nvme-cli
-Version:        1.2
-Release:        2%{?dist}
+Version:        1.3
+Release:        1%{?dist}
 Summary:        NVMe management command line interface
 
 License:        GPLv2+
@@ -38,8 +38,12 @@ make PREFIX=/usr CFLAGS="%{optflags}" LDFLAGS="%{__global_ldflags}" %{?_smp_mfla
 
 
 %changelog
-* Wed Apr 19 2017 luto@kernel.org - 1.2-1
+* Mon May 22 2017 luto@kernel.org - 1.3-1
+- Update to 1.3
+
+* Wed Apr 19 2017 luto@kernel.org - 1.2-2
 - Update to 1.2
+- 1.2-1 never existed
 
 * Sat Feb 11 2017 Fedora Release Engineering <releng@fedoraproject.org> - 1.1-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
