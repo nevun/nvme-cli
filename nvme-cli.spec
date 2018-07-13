@@ -3,7 +3,7 @@
 
 Name:           nvme-cli
 Version:        1.4
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        NVMe management command line interface
 
 License:        GPLv2+
@@ -38,6 +38,9 @@ make PREFIX=/usr CFLAGS="%{optflags}" LDFLAGS="%{__global_ldflags}" %{?_smp_mfla
 
 
 %changelog
+* Fri Jul 13 2018 Fedora Release Engineering <releng@fedoraproject.org> - 1.4-5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
+
 * Thu Feb 08 2018 Fedora Release Engineering <releng@fedoraproject.org> - 1.4-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
 
