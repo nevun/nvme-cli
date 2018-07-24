@@ -12,6 +12,7 @@ URL:            https://github.com/linux-nvme/nvme-cli
 Source0:        https://github.com/linux-nvme/%{name}/archive/v%{version}.tar.gz
 
 BuildRequires:	libuuid-devel
+BuildRequires:	gcc
 
 %description
 nvme-cli provides NVM-Express user space tooling for Linux.
