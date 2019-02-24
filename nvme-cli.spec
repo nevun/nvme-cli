@@ -1,29 +1,33 @@
-#%global commit0 bdbb4da0979fbdc079cf98410cdb31cf799e83b3
-#%global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
+#%%global commit0 bdbb4da0979fbdc079cf98410cdb31cf799e83b3
+#%%global shortcommit0 %%(c=%%{commit0}; echo ${c:0:7})
 
 Name:           nvme-cli
-Version:        1.6
-Release:        2%{?dist}
+Version:        1.7
+Release:        1%{?dist}
 Summary:        NVMe management command line interface
 
 License:        GPLv2+
 URL:            https://github.com/linux-nvme/nvme-cli
-#Source0:        https://github.com/linux-nvme/%{name}/archive/%{commit0}.tar.gz
+#Source0:        https://github.com/linux-nvme/%%{name}/archive/%%{commit0}.tar.gz
 Source0:        https://github.com/linux-nvme/%{name}/archive/v%{version}.tar.gz
 
-BuildRequires:	libuuid-devel
-BuildRequires:	gcc
+BuildRequires:  libuuid-devel
+BuildRequires:  gcc
 
 %description
 nvme-cli provides NVM-Express user space tooling for Linux.
 
 %prep
-#%setup -qn %{name}-%{commit0}
-%setup
+#%%setup -qn %%{name}-%%{commit0}
+%setup -q
 
 
 %build
-make PREFIX=/usr CFLAGS="%{optflags}" LDFLAGS="%{__global_ldflags}" %{?_smp_mflags}
+
+# NB: the -I. part works around a bug fixed up stream by commit 254bcd6b2343
+# ("Fix CFLAGS parameter").  Rather than patching the fix in, I just added
+# an extra -I.  In the next release, we should be able to drop this hack.
+make PREFIX=/usr CFLAGS="%{optflags} -I." LDFLAGS="%{__global_ldflags}" %{?_smp_mflags}
 
 
 %install
@@ -35,10 +39,14 @@ make PREFIX=/usr CFLAGS="%{optflags}" LDFLAGS="%{__global_ldflags}" %{?_smp_mfla
 %doc README.md
 %{_sbindir}/nvme
 %{_mandir}/man1/nvme*.gz
-%{_datadir}/bash_completion.d/nvme
+%{_datadir}/bash-completion/completions/nvme
 
 
 %changelog
+* Sun Feb 24 2019 luto@kernel.org - 1.7-1
+- Bump to 1.7
+- Clean up some trivial rpmlint complaints
+
 * Fri Feb 01 2019 Fedora Release Engineering <releng@fedoraproject.org> - 1.6-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
 
