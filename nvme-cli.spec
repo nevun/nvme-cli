@@ -3,7 +3,7 @@
 
 Name:           nvme-cli
 Version:        1.7
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        NVMe management command line interface
 
 License:        GPLv2+
@@ -32,6 +32,7 @@ make PREFIX=/usr CFLAGS="%{optflags} -I." LDFLAGS="%{__global_ldflags}" %{?_smp_
 
 %install
 %make_install PREFIX=/usr
+mkdir -p %{buildroot}%{_sysconfdir}/nvme
 
 
 %files
@@ -41,9 +42,13 @@ make PREFIX=/usr CFLAGS="%{optflags} -I." LDFLAGS="%{__global_ldflags}" %{?_smp_
 %{_mandir}/man1/nvme*.gz
 %{_datadir}/bash-completion/completions/nvme
 %{_datadir}/zsh/site-functions/_nvme
+%dir %{_sysconfdir}/nvme
 
 
 %changelog
+* Sun Feb 24 2019 luto@kernel.org - 1.7-2
+- Create /etc/nvme
+
 * Sun Feb 24 2019 luto@kernel.org - 1.7-1
 - Bump to 1.7
 - Clean up some trivial rpmlint complaints
