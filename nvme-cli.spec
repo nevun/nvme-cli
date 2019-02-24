@@ -40,6 +40,7 @@ make PREFIX=/usr CFLAGS="%{optflags} -I." LDFLAGS="%{__global_ldflags}" %{?_smp_
 %{_sbindir}/nvme
 %{_mandir}/man1/nvme*.gz
 %{_datadir}/bash-completion/completions/nvme
+%{_datadir}/zsh/site-functions/_nvme
 
 
 %changelog
