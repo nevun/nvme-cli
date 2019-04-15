@@ -2,8 +2,8 @@
 #%%global shortcommit0 %%(c=%%{commit0}; echo ${c:0:7})
 
 Name:           nvme-cli
-Version:        1.7
-Release:        2%{?dist}
+Version:        1.8.1
+Release:        1%{?dist}
 Summary:        NVMe management command line interface
 
 License:        GPLv2+
@@ -24,10 +24,10 @@ nvme-cli provides NVM-Express user space tooling for Linux.
 
 %build
 
-# NB: the -I. part works around a bug fixed up stream by commit 254bcd6b2343
-# ("Fix CFLAGS parameter").  Rather than patching the fix in, I just added
-# an extra -I.  In the next release, we should be able to drop this hack.
-make PREFIX=/usr CFLAGS="%{optflags} -I." LDFLAGS="%{__global_ldflags}" %{?_smp_mflags}
+# CFLAGS on the command line breaks the build.  It works okay as an
+# environment variable, though.  See:
+# https://github.com/linux-nvme/nvme-cli/pull/480
+CFLAGS="%{optflags}" make PREFIX=/usr LDFLAGS="%{__global_ldflags}" %{?_smp_mflags}
 
 
 %install
@@ -46,6 +46,10 @@ mkdir -p %{buildroot}%{_sysconfdir}/nvme
 
 
 %changelog
+* Mon Apr 15 2019 luto@kernel.org - 1.8.1-1
+- Update to 1.8.1-1.
+- Remove a build hack.
+
 * Sun Feb 24 2019 luto@kernel.org - 1.7-2
 - Create /etc/nvme
 
