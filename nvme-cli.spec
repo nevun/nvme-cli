@@ -3,7 +3,7 @@
 
 Name:           nvme-cli
 Version:        1.8.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        NVMe management command line interface
 
 License:        GPLv2+
@@ -46,6 +46,9 @@ mkdir -p %{buildroot}%{_sysconfdir}/nvme
 
 
 %changelog
+* Thu Jul 25 2019 Fedora Release Engineering <releng@fedoraproject.org> - 1.8.1-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
+
 * Mon Apr 15 2019 luto@kernel.org - 1.8.1-1
 - Update to 1.8.1-1.
 - Remove a build hack.
