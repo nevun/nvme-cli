@@ -34,8 +34,14 @@ CFLAGS="%{optflags}" make PREFIX=/usr LDFLAGS="%{__global_ldflags}" %{?_smp_mfla
 %install
 %make_install PREFIX=/usr UDEVDIR="%{_udevrulesdir}/.." SYSTEMDDIR="%{_unitdir}/.."
 mkdir -p %{buildroot}%{_sysconfdir}/nvme
+
+# hostid and hostnqn are supposed to be unique per machine.  We obviously
+# can't package them.
 rm -f %{buildroot}%{_sysconfdir}/nvme/hostid
 rm -f %{buildroot}%{_sysconfdir}/nvme/hostnqn
+
+# Do not install the dracut rule yet.  See rhbz 1742764
+rm -f %{buildroot}/usr/lib/dracut/dracut.conf.d/70-nvmf-autoconnect.conf
 
 
 %files
@@ -51,13 +57,16 @@ rm -f %{buildroot}%{_sysconfdir}/nvme/hostnqn
 %{_unitdir}/nvmf-connect.target
 %{_unitdir}/nvmf-connect@.service
 %{_udevrulesdir}/70-nvmf-autoconnect.rules
-/usr/lib/dracut/dracut.conf.d/70-nvmf-autoconnect.conf
+
+# Do not install the dracut rule yet.  See rhbz 1742764
+# /usr/lib/dracut/dracut.conf.d/70-nvmf-autoconnect.conf
 
 
 %changelog
 * Wed Oct 02 2019 luto@kernel.org - 1.9-1
 - Update to 1.9
-- 
+- Certain fabric functionality may not work yet due to missing dracut
+  support and missing hostid and hostnqn configuration.
 
 * Thu Jul 25 2019 Fedora Release Engineering <releng@fedoraproject.org> - 1.8.1-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
