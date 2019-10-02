@@ -2,8 +2,8 @@
 #%%global shortcommit0 %%(c=%%{commit0}; echo ${c:0:7})
 
 Name:           nvme-cli
-Version:        1.8.1
-Release:        2%{?dist}
+Version:        1.9
+Release:        1%{?dist}
 Summary:        NVMe management command line interface
 
 License:        GPLv2+
@@ -13,6 +13,7 @@ Source0:        https://github.com/linux-nvme/%{name}/archive/v%{version}.tar.gz
 
 BuildRequires:  libuuid-devel
 BuildRequires:  gcc
+BuildRequires:  systemd
 
 %description
 nvme-cli provides NVM-Express user space tooling for Linux.
@@ -31,8 +32,10 @@ CFLAGS="%{optflags}" make PREFIX=/usr LDFLAGS="%{__global_ldflags}" %{?_smp_mfla
 
 
 %install
-%make_install PREFIX=/usr
+%make_install PREFIX=/usr UDEVDIR="%{_udevrulesdir}/.." SYSTEMDDIR="%{_unitdir}/.."
 mkdir -p %{buildroot}%{_sysconfdir}/nvme
+rm -f %{buildroot}%{_sysconfdir}/nvme/hostid
+rm -f %{buildroot}%{_sysconfdir}/nvme/hostnqn
 
 
 %files
@@ -43,9 +46,19 @@ mkdir -p %{buildroot}%{_sysconfdir}/nvme
 %{_datadir}/bash-completion/completions/nvme
 %{_datadir}/zsh/site-functions/_nvme
 %dir %{_sysconfdir}/nvme
+%{_sysconfdir}/nvme/discovery.conf
+%{_unitdir}/nvmefc-boot-connections.service
+%{_unitdir}/nvmf-connect.target
+%{_unitdir}/nvmf-connect@.service
+%{_udevrulesdir}/70-nvmf-autoconnect.rules
+/usr/lib/dracut/dracut.conf.d/70-nvmf-autoconnect.conf
 
 
 %changelog
+* Wed Oct 02 2019 luto@kernel.org - 1.9-1
+- Update to 1.9
+- 
+
 * Thu Jul 25 2019 Fedora Release Engineering <releng@fedoraproject.org> - 1.8.1-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
 
