@@ -13,7 +13,7 @@ Source0:        https://github.com/linux-nvme/%{name}/archive/v%{version}.tar.gz
 
 BuildRequires:  libuuid-devel
 BuildRequires:  gcc
-BuildRequires:  systemd
+BuildRequires:  systemd-devel
 
 %description
 nvme-cli provides NVM-Express user space tooling for Linux.
