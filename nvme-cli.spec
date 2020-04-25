@@ -2,7 +2,7 @@
 #%%global shortcommit0 %%(c=%%{commit0}; echo ${c:0:7})
 
 Name:           nvme-cli
-Version:        1.10.1
+Version:        1.11.1
 Release:        1%{?dist}
 Summary:        NVMe management command line interface
 
@@ -54,6 +54,7 @@ rm -f %{buildroot}/usr/lib/dracut/dracut.conf.d/70-nvmf-autoconnect.conf
 %dir %{_sysconfdir}/nvme
 %{_sysconfdir}/nvme/discovery.conf
 %{_unitdir}/nvmefc-boot-connections.service
+%{_unitdir}/nvmf-autoconnect.service
 %{_unitdir}/nvmf-connect.target
 %{_unitdir}/nvmf-connect@.service
 %{_udevrulesdir}/70-nvmf-autoconnect.rules
@@ -63,6 +64,9 @@ rm -f %{buildroot}/usr/lib/dracut/dracut.conf.d/70-nvmf-autoconnect.conf
 
 
 %changelog
+* Sat Apr 25 2020 luto@kernel.org - 1.11.1-1
+- Update to 1.11
+
 * Thu Mar 19 2020 luto@kernel.org - 1.10.1-1
 - Update to 1.10.1
 
