@@ -11,6 +11,7 @@ URL:            https://github.com/linux-nvme/nvme-cli
 #Source0:        https://github.com/linux-nvme/%%{name}/archive/%%{commit0}.tar.gz
 Source0:        https://github.com/linux-nvme/%{name}/archive/v%{version}.tar.gz
 
+BuildRequires: make
 BuildRequires:  libuuid-devel
 BuildRequires:  gcc
 BuildRequires:  systemd-devel
