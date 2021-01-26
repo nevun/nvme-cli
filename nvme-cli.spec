@@ -3,7 +3,7 @@
 
 Name:           nvme-cli
 Version:        1.11.1
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        NVMe management command line interface
 
 License:        GPLv2+
@@ -65,6 +65,9 @@ rm -f %{buildroot}/usr/lib/dracut/dracut.conf.d/70-nvmf-autoconnect.conf
 
 
 %changelog
+* Tue Jan 26 2021 Fedora Release Engineering <releng@fedoraproject.org> - 1.11.1-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
+
 * Tue Jul 28 2020 Fedora Release Engineering <releng@fedoraproject.org> - 1.11.1-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
 
