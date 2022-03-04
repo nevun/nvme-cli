@@ -1,40 +1,44 @@
-#%%global commit0 bdbb4da0979fbdc079cf98410cdb31cf799e83b3
-#%%global shortcommit0 %%(c=%%{commit0}; echo ${c:0:7})
-
 Name:           nvme-cli
-Version:        1.11.1
-Release:        5%{?dist}
+Version:        2.0~rc5
+Release:        1%{?dist}
 Summary:        NVMe management command line interface
 
 License:        GPLv2+
 URL:            https://github.com/linux-nvme/nvme-cli
-#Source0:        https://github.com/linux-nvme/%%{name}/archive/%%{commit0}.tar.gz
-Source0:        https://github.com/linux-nvme/%{name}/archive/v%{version}.tar.gz
+Source0:        %{url}/archive/v%{version_no_tilde}/%{name}-%{version_no_tilde}.tar.gz
 
-BuildRequires: make
+BuildRequires:  meson >= 0.47.0
 BuildRequires:  libuuid-devel
-BuildRequires:  gcc
+BuildRequires:  gcc gcc-c++
 BuildRequires:  systemd-devel
+BuildRequires:  zlib-devel
+BuildRequires:  openssl-devel
+
+BuildRequires:  libnvme-devel >= 1.0~rc4
+BuildRequires:  json-c-devel >= 0.14
+BuildRequires:  python3-nose2
+BuildRequires:  python3-mypy
+BuildRequires:  python3-flake8
+BuildRequires:  python3-autopep8
+BuildRequires:  python3-isort
+BuildRequires:  asciidoc
+BuildRequires:  xmlto
+
 
 %description
 nvme-cli provides NVM-Express user space tooling for Linux.
 
 %prep
-#%%setup -qn %%{name}-%%{commit0}
-%setup -q
+%autosetup -p1 -n %{name}-%{version_no_tilde}
 
 
 %build
-
-# CFLAGS on the command line breaks the build.  It works okay as an
-# environment variable, though.  See:
-# https://github.com/linux-nvme/nvme-cli/pull/480
-CFLAGS="%{optflags}" make PREFIX=/usr LDFLAGS="%{__global_ldflags}" %{?_smp_mflags}
+%meson -Dudevrulesdir=%{_udevrulesdir} -Dsystemddir=%{_unitdir} -Ddocs=all -Ddocs-build=true -Dhtmldir=%{_pkgdocdir}
+%meson_build
 
 
 %install
-%make_install PREFIX=/usr UDEVDIR="%{_udevrulesdir}/.." SYSTEMDDIR="%{_unitdir}/.."
-mkdir -p %{buildroot}%{_sysconfdir}/nvme
+%meson_install
 
 # hostid and hostnqn are supposed to be unique per machine.  We obviously
 # can't package them.
@@ -44,10 +48,15 @@ rm -f %{buildroot}%{_sysconfdir}/nvme/hostnqn
 # Do not install the dracut rule yet.  See rhbz 1742764
 rm -f %{buildroot}/usr/lib/dracut/dracut.conf.d/70-nvmf-autoconnect.conf
 
+# Move html docs into the right place
+mv %{buildroot}%{_pkgdocdir}/nvme %{buildroot}%{_pkgdocdir}/html
+rm -rf %{buildroot}%{_pkgdocdir}/nvme
+
 
 %files
 %license LICENSE
 %doc README.md
+%doc %{_pkgdocdir}
 %{_sbindir}/nvme
 %{_mandir}/man1/nvme*.gz
 %{_datadir}/bash-completion/completions/nvme
@@ -65,6 +74,9 @@ rm -f %{buildroot}/usr/lib/dracut/dracut.conf.d/70-nvmf-autoconnect.conf
 
 
 %changelog
+* Fri Mar 04 2022 Tomas Bzatek <tbzatek@redhat.com> - 2.0~rc5-1
+- Update to 2.0-rc5
+
 * Thu Jan 20 2022 Fedora Release Engineering <releng@fedoraproject.org> - 1.11.1-5
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild
 
