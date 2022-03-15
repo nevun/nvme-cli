@@ -1,11 +1,14 @@
 Name:           nvme-cli
-Version:        2.0~rc5
+Version:        2.0~rc6
 Release:        1%{?dist}
 Summary:        NVMe management command line interface
 
 License:        GPLv2+
 URL:            https://github.com/linux-nvme/nvme-cli
 Source0:        %{url}/archive/v%{version_no_tilde}/%{name}-%{version_no_tilde}.tar.gz
+
+# backport from upstream
+Patch0:         connect_return_code.patch
 
 BuildRequires:  meson >= 0.47.0
 BuildRequires:  libuuid-devel
@@ -74,6 +77,9 @@ rm -rf %{buildroot}%{_pkgdocdir}/nvme
 
 
 %changelog
+* Tue Mar 15 2022 Tomas Bzatek <tbzatek@redhat.com> - 2.0~rc6-1
+- Update to 2.0-rc6
+
 * Fri Mar 04 2022 Tomas Bzatek <tbzatek@redhat.com> - 2.0~rc5-1
 - Update to 2.0-rc5
 
