@@ -1,5 +1,5 @@
 Name:           nvme-cli
-Version:        2.0~rc6
+Version:        2.0~rc8
 Release:        1%{?dist}
 Summary:        NVMe management command line interface
 
@@ -8,7 +8,8 @@ URL:            https://github.com/linux-nvme/nvme-cli
 Source0:        %{url}/archive/v%{version_no_tilde}/%{name}-%{version_no_tilde}.tar.gz
 
 # backport from upstream
-Patch0:         connect_return_code.patch
+Patch0:         nvme-cli-2.0-rc9_fabrics_Support_connect_even_when_no_hostnqn_file_exists.patch
+Patch1:         nvme-cli-2.0-rc9_fabrics_Do_not_free_static_string.patch
 
 BuildRequires:  meson >= 0.47.0
 BuildRequires:  libuuid-devel
@@ -17,7 +18,7 @@ BuildRequires:  systemd-devel
 BuildRequires:  zlib-devel
 BuildRequires:  openssl-devel
 
-BuildRequires:  libnvme-devel >= 1.0~rc4
+BuildRequires:  libnvme-devel >= 1.0~rc8
 BuildRequires:  json-c-devel >= 0.14
 BuildRequires:  python3-nose2
 BuildRequires:  python3-mypy
@@ -76,7 +77,22 @@ rm -rf %{buildroot}%{_pkgdocdir}/nvme
 # /usr/lib/dracut/dracut.conf.d/70-nvmf-autoconnect.conf
 
 
+%post
+if [ $1 -eq 1 ] || [ $1 -eq 2 ]; then
+    if [ ! -s %{_sysconfdir}/nvme/hostnqn ]; then
+        echo $(nvme gen-hostnqn) > %{_sysconfdir}/nvme/hostnqn
+    fi
+    if [ ! -s %{_sysconfdir}/nvme/hostid ]; then
+        uuidgen > %{_sysconfdir}/nvme/hostid
+    fi
+fi
+
+
 %changelog
+* Mon Apr 04 2022 Tomas Bzatek <tbzatek@redhat.com> - 2.0~rc8-1
+- Update to 2.0-rc8
+- Added scriptlet to generate /etc/nvme/hostnqn and hostid files (#2065886)
+
 * Tue Mar 15 2022 Tomas Bzatek <tbzatek@redhat.com> - 2.0~rc6-1
 - Update to 2.0-rc6
 
