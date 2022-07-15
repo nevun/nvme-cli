@@ -1,9 +1,9 @@
 Name:           nvme-cli
-Version:        2.0
+Version:        2.1~rc0
 Release:        1%{?dist}
 Summary:        NVMe management command line interface
 
-License:        GPLv2+
+License:        GPLv2
 URL:            https://github.com/linux-nvme/nvme-cli
 Source0:        %{url}/archive/v%{version_no_tilde}/%{name}-%{version_no_tilde}.tar.gz
 
@@ -14,7 +14,7 @@ BuildRequires:  systemd-devel
 BuildRequires:  zlib-devel
 BuildRequires:  openssl-devel
 
-BuildRequires:  libnvme-devel >= 1.0
+BuildRequires:  libnvme-devel >= 1.1~rc0
 BuildRequires:  json-c-devel >= 0.14
 BuildRequires:  python3-nose2
 BuildRequires:  python3-mypy
@@ -42,6 +42,8 @@ nvme-cli provides NVM-Express user space tooling for Linux.
 
 # hostid and hostnqn are supposed to be unique per machine.  We obviously
 # can't package them.
+# nvme-stas ships the stas-config@.service that will take care
+# of generating these files if missing. See rhbz 2065886#c19
 rm -f %{buildroot}%{_sysconfdir}/nvme/hostid
 rm -f %{buildroot}%{_sysconfdir}/nvme/hostnqn
 
@@ -73,18 +75,11 @@ rm -rf %{buildroot}%{_pkgdocdir}/nvme
 # /usr/lib/dracut/dracut.conf.d/70-nvmf-autoconnect.conf
 
 
-%post
-if [ $1 -eq 1 ] || [ $1 -eq 2 ]; then
-    if [ ! -s %{_sysconfdir}/nvme/hostnqn ]; then
-        echo $(nvme gen-hostnqn) > %{_sysconfdir}/nvme/hostnqn
-    fi
-    if [ ! -s %{_sysconfdir}/nvme/hostid ]; then
-        uuidgen > %{_sysconfdir}/nvme/hostid
-    fi
-fi
-
-
 %changelog
+* Fri Jul 15 2022 Tomas Bzatek <tbzatek@redhat.com> - 2.1~rc0-1
+- Update to 2.1-rc0
+- Drop the hostnqn generate scriptlet (#2065886)
+
 * Mon Apr 11 2022 Tomas Bzatek <tbzatek@redhat.com> - 2.0-1
 - Update to 2.0
 
