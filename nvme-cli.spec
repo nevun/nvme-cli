@@ -1,6 +1,6 @@
 Name:           nvme-cli
-Version:        2.1~rc0
-Release:        2%{?dist}
+Version:        2.1.1
+Release:        1%{?dist}
 Summary:        NVMe management command line interface
 
 License:        GPLv2
@@ -14,7 +14,7 @@ BuildRequires:  systemd-devel
 BuildRequires:  zlib-devel
 BuildRequires:  openssl-devel
 
-BuildRequires:  libnvme-devel >= 1.1~rc0
+BuildRequires:  libnvme-devel >= 1.1
 BuildRequires:  json-c-devel >= 0.14
 BuildRequires:  python3-nose2
 BuildRequires:  python3-mypy
@@ -24,6 +24,7 @@ BuildRequires:  python3-isort
 BuildRequires:  asciidoc
 BuildRequires:  xmlto
 
+Requires:       util-linux
 
 %description
 nvme-cli provides NVM-Express user space tooling for Linux.
@@ -76,6 +77,9 @@ rm -rf %{buildroot}%{_pkgdocdir}/nvme
 
 
 %changelog
+* Fri Aug 05 2022 Tomas Bzatek <tbzatek@redhat.com> - 2.1.1-1
+- Update to 2.1.1
+
 * Fri Jul 22 2022 Fedora Release Engineering <releng@fedoraproject.org> - 2.1~rc0-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_37_Mass_Rebuild
 
