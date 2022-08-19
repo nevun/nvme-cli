@@ -1,5 +1,5 @@
 Name:           nvme-cli
-Version:        2.1.1
+Version:        2.1.2
 Release:        1%{?dist}
 Summary:        NVMe management command line interface
 
@@ -77,6 +77,9 @@ rm -rf %{buildroot}%{_pkgdocdir}/nvme
 
 
 %changelog
+* Fri Aug 19 2022 Tomas Bzatek <tbzatek@redhat.com> - 2.1.2-1
+- Update to 2.1.2
+
 * Fri Aug 05 2022 Tomas Bzatek <tbzatek@redhat.com> - 2.1.1-1
 - Update to 2.1.1
 
