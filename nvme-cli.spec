@@ -1,6 +1,6 @@
 Name:           nvme-cli
 Version:        2.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        NVMe management command line interface
 
 License:        GPLv2+
@@ -23,6 +23,13 @@ BuildRequires:  python3-autopep8
 BuildRequires:  python3-isort
 BuildRequires:  asciidoc
 BuildRequires:  xmlto
+
+# https://bugzilla.redhat.com/show_bug.cgi?id=2115983
+# backport of bash completion fixes from git master
+Patch0:         nvme-cli_2.1-completions_Collapse_declaration_and_attribute_assignment.patch
+Patch1:         nvme-cli_2.1-bash-nvme-completion.sh_fixed_error_when_sourced_twice.patch
+Patch2:         nvme-cli_2.1-bash-nvme-completion.sh_fixed_typo_with_seagate_plugin.patch
+Patch3:         nvme-cli_2.1-bash-nvme-completion.sh_a_better_fix_for_readonly_with_bash_5x.patch
 
 
 %description
@@ -85,6 +92,9 @@ fi
 
 
 %changelog
+* Fri Aug 19 2022 Tomas Bzatek <tbzatek@redhat.com> - 2.0-2
+- Fix bash completion (#2115983)
+
 * Mon Apr 11 2022 Tomas Bzatek <tbzatek@redhat.com> - 2.0-1
 - Update to 2.0
 

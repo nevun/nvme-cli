@@ -1,0 +1,66 @@
+From 25fd8c707b106ca0763402566ad657ef710bf09e Mon Sep 17 00:00:00 2001
+From: Brad Mouring <brad@the-bradlands.net>
+Date: Mon, 2 May 2022 22:38:24 -0500
+Subject: [PATCH] completions: Collapse declaration and attribute assignment
+
+Previously, the associative arrays for the vendor/subcommands and
+vendor/functions listings were split into a declaration of type
+(using "typeset") and attribute definition (using "readonly"). On
+bash 5.1.16 (at least), this lead to the following error (reported
+after enabling -xv to expand and print shell inputs)
+
+  ...
+  + . /usr/share/bash-completion/completions/nvme
+  # bash tab completion for the nvme command line utility
+  # (unfortunately, bash won't let me add descriptions to cmds)
+  # Kelly Kaoudis kelly.n.kaoudis at intel.com, Aug. 2015
+
+  # Constant to indicate command has no options
+  readonly NO_OPTS=""
+  ++ readonly NO_OPTS=
+  ++ NO_OPTS=
+
+  # Associative array of plugins and associated subcommands
+  # Order here is same as PLUGIN_OBJS in Makefile
+  typeset -A _plugin_subcmds
+  ++ typeset -A _plugin_subcmds
+  readonly _plugin_subcmds=(
+          [intel]="id-ctrl internal-log lat-stats \
+  ...
+  ++ _plugin_subcmds=(['intel']='id-ctrl internal-log lat-stats...
+  bash: 'intel': syntax error: operand expected (error token is "'intel'")
+  ...
+
+Using the available flags for "typeset" to declare the variables as
+readonly arrays resolved the issue (and allows for bash completion
+to work as-expected)
+
+Signed-off-by: Brad Mouring <bmouring@gmail.com>
+---
+ completions/bash-nvme-completion.sh | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/completions/bash-nvme-completion.sh b/completions/bash-nvme-completion.sh
+index 5e0eb23bb..51931bc19 100644
+--- a/completions/bash-nvme-completion.sh
++++ b/completions/bash-nvme-completion.sh
+@@ -7,8 +7,7 @@ readonly NO_OPTS=""
+ 
+ # Associative array of plugins and associated subcommands
+ # Order here is same as PLUGIN_OBJS in Makefile
+-typeset -A _plugin_subcmds
+-readonly _plugin_subcmds=(
++typeset -Ar _plugin_subcmds=(
+ 	[intel]="id-ctrl internal-log lat-stats \
+ 		set-bucket-thresholds lat-stats-tracking \
+ 		market-name smart-log-add temp-stats"
+@@ -55,8 +54,7 @@ readonly _plugin_subcmds=(
+ )
+ 
+ # Associative array mapping plugins to coresponding option completions
+-typeset -A _plugin_funcs
+-readonly _plugin_funcs=(
++typeset -Ar _plugin_funcs=(
+ 	[intel]="plugin_intel_opts"
+ 	[amzn]="plugin_amzn_opts"
+ 	[memblaze]="plugin_memblaze_opts"

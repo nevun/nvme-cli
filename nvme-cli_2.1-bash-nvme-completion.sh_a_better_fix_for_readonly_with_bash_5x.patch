@@ -1,0 +1,33 @@
+From 86b73b3136ec96dd3eefd5a721744ed2d6d7bd41 Mon Sep 17 00:00:00 2001
+From: Evgeny Grin <k2k@narod.ru>
+Date: Fri, 17 Jun 2022 15:00:39 +0300
+Subject: [PATCH] bash-nvme-completion.sh: a better fix for "readonly" with
+ bash 5.x
+
+The error with one-line "readonly" with assignment on bash 5.x was fixed
+by 25fd8c707b106ca0763402566ad657ef710bf09e. This commit restores "readonly"
+functionality and adds some uniformity.
+---
+ completions/bash-nvme-completion.sh | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/completions/bash-nvme-completion.sh b/completions/bash-nvme-completion.sh
+index 00593b96a..e8177018a 100644
+--- a/completions/bash-nvme-completion.sh
++++ b/completions/bash-nvme-completion.sh
+@@ -55,6 +55,7 @@ typeset -Ar _plugin_subcmds=(
+ 	[nvidia]="id-ctrl"
+ 	[ymtc]="smart-log-add"
+ )
++readonly _plugin_subcmds
+ 
+ # Associative array mapping plugins to coresponding option completions
+ typeset -Ar _plugin_funcs=(
+@@ -75,6 +76,7 @@ typeset -Ar _plugin_funcs=(
+ 	[nvidia]="plugin_nvidia_opts"
+ 	[ymtc]="plugin_ymtc_opts"
+ )
++readonly _plugin_funcs
+ 
+ # Top level commands
+ _cmds="list list-subsys id-ctrl id-ns \
