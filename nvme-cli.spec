@@ -11,6 +11,7 @@ BuildRequires:  meson >= 0.47.0
 BuildRequires:  libuuid-devel
 BuildRequires:  gcc gcc-c++
 BuildRequires:  systemd-devel
+BuildRequires:  systemd-rpm-macros
 BuildRequires:  zlib-devel
 BuildRequires:  openssl-devel
 
