@@ -13,7 +13,7 @@ BuildRequires:  systemd-devel
 BuildRequires:  zlib-devel
 BuildRequires:  openssl-devel
 
-BuildRequires:  libnvme-devel >= 1.1
+BuildRequires:  libnvme-devel >= 1.2
 BuildRequires:  json-c-devel >= 0.14
 BuildRequires:  python3-nose2
 BuildRequires:  python3-mypy
