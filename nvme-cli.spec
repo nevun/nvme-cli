@@ -1,3 +1,6 @@
+# RHEL 8 compatibility
+%{!?version_no_tilde: %define version_no_tilde %{shrink:%(echo '%{version}' | tr '~' '-')}}
+
 Name:           nvme-cli
 Version:        2.2
 Release:        1%{?dist}
@@ -15,12 +18,15 @@ BuildRequires:  zlib-devel
 BuildRequires:  openssl-devel
 
 BuildRequires:  libnvme-devel >= 1.2
-BuildRequires:  json-c-devel >= 0.14
+BuildRequires:  json-c-devel >= 0.13
+
+%if (0%{?rhel} == 0)
 BuildRequires:  python3-nose2
 BuildRequires:  python3-mypy
 BuildRequires:  python3-flake8
 BuildRequires:  python3-autopep8
 BuildRequires:  python3-isort
+%endif
 BuildRequires:  asciidoc
 BuildRequires:  xmlto
 
