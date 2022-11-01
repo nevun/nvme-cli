@@ -8,6 +8,7 @@ URL:            https://github.com/linux-nvme/nvme-cli
 Source0:        %{url}/archive/v%{version_no_tilde}/%{name}-%{version_no_tilde}.tar.gz
 
 BuildRequires:  meson >= 0.48.0
+BuildRequires:  libuuid-devel
 BuildRequires:  gcc gcc-c++
 BuildRequires:  systemd-devel
 BuildRequires:  zlib-devel
