@@ -1,9 +1,11 @@
 # RHEL 8 compatibility
 %{!?version_no_tilde: %define version_no_tilde %{shrink:%(echo '%{version}' | tr '~' '-')}}
 
+%global toolchain clang
+
 Name:           nvme-cli
 Version:        2.2.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        NVMe management command line interface
 
 License:        GPLv2
@@ -11,7 +13,7 @@ URL:            https://github.com/linux-nvme/nvme-cli
 Source0:        %{url}/archive/v%{version_no_tilde}/%{name}-%{version_no_tilde}.tar.gz
 
 BuildRequires:  meson >= 0.48.0
-BuildRequires:  gcc gcc-c++
+BuildRequires:  clang
 BuildRequires:  systemd-devel
 BuildRequires:  zlib-devel
 BuildRequires:  openssl-devel
@@ -82,6 +84,9 @@ rm -rf %{buildroot}%{_pkgdocdir}/nvme
 
 
 %changelog
+* Fri May 19 2023 Tomas Bzatek <tbzatek@redhat.com> - 2.2.1-2
+- Rebuild with clang
+
 * Fri Nov 04 2022 Tomas Bzatek <tbzatek@redhat.com> - 2.2.1-1
 - Update to 2.2.1
 
