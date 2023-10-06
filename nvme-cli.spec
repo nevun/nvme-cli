@@ -3,7 +3,7 @@
 
 Name:           nvme-cli
 Version:        2.4
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        NVMe management command line interface
 
 License:        GPLv2
@@ -24,17 +24,12 @@ BuildRequires:  openssl-devel
 BuildRequires:  libnvme-devel >= 1.4-2
 BuildRequires:  json-c-devel >= 0.13
 
-%if (0%{?rhel} == 0)
-BuildRequires:  python3-nose2
-BuildRequires:  python3-mypy
-BuildRequires:  python3-flake8
-BuildRequires:  python3-autopep8
-BuildRequires:  python3-isort
-%endif
 BuildRequires:  asciidoc
 BuildRequires:  xmlto
 
 Requires:       util-linux
+
+Patch0:         nvme-cli-2.6-fabrics-Use_corresponding_hostid_when_hostnqn_is_generated.patch
 
 %description
 nvme-cli provides NVM-Express user space tooling for Linux.
@@ -87,6 +82,9 @@ rm -rf %{buildroot}%{_pkgdocdir}/nvme
 
 
 %changelog
+* Fri Oct 06 2023 Tomas Bzatek <tbzatek@redhat.com> - 2.4-3
+- Backport 'fabrics: Use corresponding hostid when hostnqn is generated'
+
 * Thu Apr 20 2023 Tomas Bzatek <tbzatek@redhat.com> - 2.4-2
 - Backport the NBFT support from git master
 
