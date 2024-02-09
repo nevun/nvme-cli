@@ -1,0 +1,68 @@
+From 252929069d6c9042e9c95f41788006cb3eb2f452 Mon Sep 17 00:00:00 2001
+From: Martin George <marting@netapp.com>
+Date: Tue, 19 Dec 2023 21:59:07 +0530
+Subject: [PATCH] fabrics: move hostid/hostnqn warnings to verbose level
+
+Currently nvme connect prints an annoying "use hostid which
+does not match uuid in hostnqn" warning even for normal
+scenarios when both the hostid and hostnqn files are present.
+So move these warnings to verbose level instead.
+
+Signed-off-by: Martin George <marting@netapp.com>
+---
+ fabrics.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
+
+diff --git a/fabrics.c b/fabrics.c
+index 2a0ad7089..dcae9aead 100644
+--- a/fabrics.c
++++ b/fabrics.c
+@@ -632,7 +632,7 @@ char *nvmf_hostid_from_hostnqn(const char *hostnqn)
+ 	return strdup(uuid + strlen("uuid:"));
+ }
+ 
+-void nvmf_check_hostid_and_hostnqn(const char *hostid, const char *hostnqn)
++void nvmf_check_hostid_and_hostnqn(const char *hostid, const char *hostnqn, unsigned int verbose)
+ {
+ 	char *hostid_from_file, *hostid_from_hostnqn;
+ 
+@@ -641,7 +641,9 @@ void nvmf_check_hostid_and_hostnqn(const char *hostid, const char *hostnqn)
+ 
+ 	hostid_from_file = nvmf_hostid_from_file();
+ 	if (hostid_from_file && strcmp(hostid_from_file, hostid)) {
+-		fprintf(stderr, "warning: use generated hostid instead of hostid file\n");
++		if (verbose)
++			fprintf(stderr,
++				"warning: use generated hostid instead of hostid file\n");
+ 		free(hostid_from_file);
+ 	}
+ 
+@@ -650,7 +652,9 @@ void nvmf_check_hostid_and_hostnqn(const char *hostid, const char *hostnqn)
+ 
+ 	hostid_from_hostnqn = nvmf_hostid_from_hostnqn(hostnqn);
+ 	if (hostid_from_hostnqn && strcmp(hostid_from_hostnqn, hostid)) {
+-		fprintf(stderr, "warning: use hostid which does not match uuid in hostnqn\n");
++		if (verbose)
++			fprintf(stderr,
++				"warning: use hostid which does not match uuid in hostnqn\n");
+ 		free(hostid_from_hostnqn);
+ 	}
+ }
+@@ -741,7 +745,7 @@ int nvmf_discover(const char *desc, int argc, char **argv, bool connect)
+ 		hostid = hid = nvmf_hostid_from_file();
+ 	if (!hostid && hostnqn)
+ 		hostid = hid = nvmf_hostid_from_hostnqn(hostnqn);
+-	nvmf_check_hostid_and_hostnqn(hostid, hostnqn);
++	nvmf_check_hostid_and_hostnqn(hostid, hostnqn, verbose);
+ 	h = nvme_lookup_host(r, hostnqn, hostid);
+ 	if (!h) {
+ 		ret = ENOMEM;
+@@ -964,7 +968,7 @@ int nvmf_connect(const char *desc, int argc, char **argv)
+ 		hostid = hid = nvmf_hostid_from_file();
+ 	if (!hostid && hostnqn)
+ 		hostid = hid = nvmf_hostid_from_hostnqn(hostnqn);
+-	nvmf_check_hostid_and_hostnqn(hostid, hostnqn);
++	nvmf_check_hostid_and_hostnqn(hostid, hostnqn, verbose);
+ 	h = nvme_lookup_host(r, hostnqn, hostid);
+ 	if (!h) {
+ 		errno = ENOMEM;
