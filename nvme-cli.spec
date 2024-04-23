@@ -3,7 +3,7 @@
 
 Name:           nvme-cli
 Version:        2.8
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        NVMe management command line interface
 
 License:        GPL-2.0-only
@@ -27,6 +27,9 @@ BuildRequires:  asciidoc
 BuildRequires:  xmlto
 
 Requires:       util-linux
+
+# https://github.com/linux-nvme/nvme-cli/pull/2284
+Patch0:         nvme-cli-2.9-systemd-hardening.patch
 
 %description
 nvme-cli provides NVM-Express user space tooling for Linux.
@@ -81,6 +84,9 @@ rm -rf %{buildroot}%{_pkgdocdir}/nvme
 
 
 %changelog
+* Tue Apr 23 2024 Tomas Bzatek <tbzatek@redhat.com> - 2.8-2
+- Harden the systemd units
+
 * Wed Feb 14 2024 Tomas Bzatek <tbzatek@redhat.com> - 2.8-1
 - Update to 2.8
 
