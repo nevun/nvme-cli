@@ -3,12 +3,13 @@
 
 Name:           nvme-cli
 Version:        2.9.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        NVMe management command line interface
 
 License:        GPL-2.0-only
 URL:            https://github.com/linux-nvme/nvme-cli
 Source0:        %{url}/archive/v%{version_no_tilde}/%{name}-%{version_no_tilde}.tar.gz
+Source1:        nvmf-connect-nbft.sh
 
 BuildRequires:  meson >= 0.50.0
 BuildRequires:  gcc gcc-c++
@@ -44,6 +45,8 @@ nvme-cli provides NVM-Express user space tooling for Linux.
 %install
 %meson_install
 %{__install} -pm 644 README.md %{buildroot}%{_pkgdocdir}
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/NetworkManager/dispatcher.d
+%{__install} -pm 755 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/NetworkManager/dispatcher.d
 
 # hostid and hostnqn are supposed to be unique per machine.  We obviously
 # can't package them.
@@ -79,9 +82,13 @@ rm -rf %{buildroot}%{_pkgdocdir}/nvme
 %{_udevrulesdir}/71-nvmf-netapp.rules
 # Do not install the dracut rule yet.  See rhbz 1742764
 # /usr/lib/dracut/dracut.conf.d/70-nvmf-autoconnect.conf
+%{_sysconfdir}/NetworkManager/dispatcher.d/nvmf-connect-nbft.sh
 
 
 %changelog
+* Mon Jun 03 2024 Tomas Bzatek <tbzatek@redhat.com> - 2.9.1-2
+- Install custom nvmf-connect-nbft.sh NetworkManager hook
+
 * Fri May 03 2024 Tomas Bzatek <tbzatek@redhat.com> - 2.9.1-1
 - Update to 2.9.1
 
