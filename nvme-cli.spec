@@ -3,7 +3,7 @@
 
 Name:           nvme-cli
 Version:        2.9.1
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        NVMe management command line interface
 
 License:        GPL-2.0-only
@@ -86,6 +86,9 @@ rm -rf %{buildroot}%{_pkgdocdir}/nvme
 
 
 %changelog
+* Thu Jul 18 2024 Fedora Release Engineering <releng@fedoraproject.org> - 2.9.1-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_41_Mass_Rebuild
+
 * Mon Jun 03 2024 Tomas Bzatek <tbzatek@redhat.com> - 2.9.1-2
 - Install custom nvmf-connect-nbft.sh NetworkManager hook
 
