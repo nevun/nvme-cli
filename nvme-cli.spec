@@ -2,7 +2,7 @@
 %{!?version_no_tilde: %define version_no_tilde %{shrink:%(echo '%{version}' | tr '~' '-')}}
 
 Name:           nvme-cli
-Version:        2.10
+Version:        2.10.2
 Release:        1%{?dist}
 Summary:        NVMe management command line interface
 
@@ -10,8 +10,6 @@ License:        GPL-2.0-only
 URL:            https://github.com/linux-nvme/nvme-cli
 Source0:        %{url}/archive/v%{version_no_tilde}/%{name}-%{version_no_tilde}.tar.gz
 Source1:        nvmf-connect-nbft.sh
-
-Patch0:         nvme-cli-2.11-rename_ocp-unsupported-req-log_file.patch
 
 BuildRequires:  meson >= 0.50.0
 BuildRequires:  gcc gcc-c++
@@ -88,6 +86,9 @@ rm -rf %{buildroot}%{_pkgdocdir}/nvme
 
 
 %changelog
+* Mon Aug 05 2024 Tomas Bzatek <tbzatek@redhat.com> - 2.10.2-1
+- Update to 2.10.2
+
 * Mon Aug 05 2024 Tomas Bzatek <tbzatek@redhat.com> - 2.10-1
 - Update to 2.10
 
