@@ -2,14 +2,16 @@
 %{!?version_no_tilde: %define version_no_tilde %{shrink:%(echo '%{version}' | tr '~' '-')}}
 
 Name:           nvme-cli
-Version:        2.9.1
-Release:        3%{?dist}
+Version:        2.10
+Release:        1%{?dist}
 Summary:        NVMe management command line interface
 
 License:        GPL-2.0-only
 URL:            https://github.com/linux-nvme/nvme-cli
 Source0:        %{url}/archive/v%{version_no_tilde}/%{name}-%{version_no_tilde}.tar.gz
 Source1:        nvmf-connect-nbft.sh
+
+Patch0:         nvme-cli-2.11-rename_ocp-unsupported-req-log_file.patch
 
 BuildRequires:  meson >= 0.50.0
 BuildRequires:  gcc gcc-c++
@@ -21,7 +23,7 @@ BuildRequires:  openssl-devel
 BuildRequires:  kernel-headers
 %endif
 
-BuildRequires:  libnvme-devel >= 1.9
+BuildRequires:  libnvme-devel >= 1.10
 BuildRequires:  json-c-devel >= 0.13
 
 BuildRequires:  asciidoc
@@ -86,6 +88,9 @@ rm -rf %{buildroot}%{_pkgdocdir}/nvme
 
 
 %changelog
+* Mon Aug 05 2024 Tomas Bzatek <tbzatek@redhat.com> - 2.10-1
+- Update to 2.10
+
 * Thu Jul 18 2024 Fedora Release Engineering <releng@fedoraproject.org> - 2.9.1-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_41_Mass_Rebuild
 
