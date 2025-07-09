@@ -86,6 +86,7 @@ rm -rf %{buildroot}%{_pkgdocdir}/nvme
 %{_udevrulesdir}/70-nvmf-autoconnect.rules
 %{_udevrulesdir}/70-nvmf-keys.rules
 %{_udevrulesdir}/71-nvmf-netapp.rules
+%{_udevrulesdir}/71-nvmf-vastdata.rules
 # Do not install the dracut rule yet.  See rhbz 1742764
 # /usr/lib/dracut/dracut.conf.d/70-nvmf-autoconnect.conf
 %{nmlibdir}/dispatcher.d/99-nvme-nbft-connect.sh
