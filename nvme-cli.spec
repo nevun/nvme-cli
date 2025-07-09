@@ -4,7 +4,7 @@
 %global nmlibdir %{_prefix}/lib/NetworkManager
 
 Name:           nvme-cli
-Version:        2.13
+Version:        2.14
 Release:        1%{?dist}
 Summary:        NVMe management command line interface
 
@@ -24,7 +24,7 @@ BuildRequires:  openssl-devel
 BuildRequires:  kernel-headers
 %endif
 
-BuildRequires:  libnvme-devel >= 1.13
+BuildRequires:  libnvme-devel >= 1.14
 BuildRequires:  json-c-devel >= 0.14
 
 BuildRequires:  asciidoc
@@ -41,7 +41,7 @@ nvme-cli provides NVM-Express user space tooling for Linux.
 
 
 %build
-%meson -Dudevrulesdir=%{_udevrulesdir} -Dsystemddir=%{_unitdir} -Dpdc-enabled=true -Ddocs=all -Ddocs-build=true -Dhtmldir=%{_pkgdocdir}
+%meson -Dudevrulesdir=%{_udevrulesdir} -Dsystemddir=%{_unitdir} -Dpdc-enabled=false -Ddocs=all -Ddocs-build=true -Dhtmldir=%{_pkgdocdir}
 %meson_build
 
 
@@ -93,6 +93,10 @@ rm -rf %{buildroot}%{_pkgdocdir}/nvme
 
 
 %changelog
+* Wed Jul 09 2025 Tomas Bzatek <tbzatek@redhat.com> - 2.14-1
+- Update to 2.14
+- Disable Persistent Discovery Controllers by default
+
 * Fri Apr 11 2025 Tomas Bzatek <tbzatek@redhat.com> - 2.13-1
 - Update to 2.13
 
