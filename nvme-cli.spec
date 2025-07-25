@@ -4,7 +4,7 @@
 %global nmlibdir %{_prefix}/lib/NetworkManager
 
 Name:           nvme-cli
-Version:        2.14
+Version:        2.15
 Release:        1%{?dist}
 Summary:        NVMe management command line interface
 
@@ -24,7 +24,7 @@ BuildRequires:  openssl-devel
 BuildRequires:  kernel-headers
 %endif
 
-BuildRequires:  libnvme-devel >= 1.14
+BuildRequires:  libnvme-devel >= 1.15
 BuildRequires:  json-c-devel >= 0.14
 
 BuildRequires:  asciidoc
@@ -87,6 +87,7 @@ rm -rf %{buildroot}%{_pkgdocdir}/nvme
 %{_udevrulesdir}/70-nvmf-keys.rules
 %{_udevrulesdir}/71-nvmf-netapp.rules
 %{_udevrulesdir}/71-nvmf-vastdata.rules
+%{_udevrulesdir}/71-nvme-hpe.rules
 # Do not install the dracut rule yet.  See rhbz 1742764
 # /usr/lib/dracut/dracut.conf.d/70-nvmf-autoconnect.conf
 %{nmlibdir}/dispatcher.d/99-nvme-nbft-connect.sh
@@ -94,6 +95,9 @@ rm -rf %{buildroot}%{_pkgdocdir}/nvme
 
 
 %changelog
+* Fri Jul 25 2025 Tomas Bzatek <tbzatek@redhat.com> - 2.15-1
+- Update to 2.15
+
 * Wed Jul 09 2025 Tomas Bzatek <tbzatek@redhat.com> - 2.14-1
 - Update to 2.14
 - Disable Persistent Discovery Controllers by default
