@@ -1,0 +1,32 @@
+From 1141d617dfb3f50783fe80edd49728b8035a955f Mon Sep 17 00:00:00 2001
+From: Daniel Wagner <wagi@kernel.org>
+Date: Fri, 25 Jul 2025 13:30:19 +0200
+Subject: [PATCH] udev: rename 71-nvme-hpe.rules to 71-nvmf-hpe.rules
+
+The rules file naming is inconsistent with the other rules. Use the
+nvmf- prefix.
+
+Signed-off-by: Daniel Wagner <wagi@kernel.org>
+---
+ meson.build                                                     | 2 +-
+ .../udev-rules/{71-nvme-hpe.rules.in => 71-nvmf-hpe.rules.in}   | 0
+ 2 files changed, 1 insertion(+), 1 deletion(-)
+ rename nvmf-autoconnect/udev-rules/{71-nvme-hpe.rules.in => 71-nvmf-hpe.rules.in} (100%)
+
+diff --git a/meson.build b/meson.build
+index 1d57748605..3afd8ba3b1 100644
+--- a/meson.build
++++ b/meson.build
+@@ -267,7 +267,7 @@ udev_files = [
+   '65-persistent-net-nbft.rules',
+   '70-nvmf-autoconnect.rules',
+   '70-nvmf-keys.rules',
+-  '71-nvme-hpe.rules',
++  '71-nvmf-hpe.rules',
+   '71-nvmf-netapp.rules',
+   '71-nvmf-vastdata.rules',
+ ]
+diff --git a/nvmf-autoconnect/udev-rules/71-nvme-hpe.rules.in b/nvmf-autoconnect/udev-rules/71-nvmf-hpe.rules.in
+similarity index 100%
+rename from nvmf-autoconnect/udev-rules/71-nvme-hpe.rules.in
+rename to nvmf-autoconnect/udev-rules/71-nvmf-hpe.rules.in

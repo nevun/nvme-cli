@@ -1,0 +1,173 @@
+From 80ad62ba75f1f1dd5b99c6f56769141b48344485 Mon Sep 17 00:00:00 2001
+From: Nilay Shroff <nilay@linux.ibm.com>
+Date: Tue, 5 Aug 2025 15:50:50 +0530
+Subject: [PATCH] nvme-list: make verbose JSON output backward compatible
+
+The commit 64bed0a87a23 ("nvme-list: fix verbose JSON output for 'nvme
+list' command") changed the JSON output format of the nvme list --verbose
+command. While the new format is more structured, it introduced a
+regression by breaking compatibility with tools and scripts relying on
+the previous JSON schema.
+
+So to restore backward compatibility, we now leverage the existing
+--output-format-version option. With this patch,
+1. The default --output-format-version=1 retains the original (legacy) JSON
+format for nvme list --verbose.
+2. If the user explicitly sets --output-format-version=2 then the newer
+JSON structure introduced by commit 64bed0a87a23 ("nvme-list: fix verbose
+JSON output for 'nvme list' command") is used.
+
+This ensures that existing users and automation relying on the older format
+do not break, while still supporting the newer schema for forward-looking
+users.
+
+Fixes: 64bed0a87a23 ("nvme-list: fix verbose JSON output for 'nvme list' command")
+Signed-off-by: Nilay Shroff <nilay@linux.ibm.com>
+Link: https://patch.msgid.link/20250805102055.3375272-1-nilay@linux.ibm.com
+Signed-off-by: Daniel Wagner <wagi@kernel.org>
+---
+ nvme-print-json.c | 117 ++++++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 113 insertions(+), 4 deletions(-)
+
+diff --git a/nvme-print-json.c b/nvme-print-json.c
+index 11b6661624..829ba718e8 100644
+--- a/nvme-print-json.c
++++ b/nvme-print-json.c
+@@ -4519,7 +4519,7 @@ static void json_print_detail_list(nvme_subsystem_t s, struct json_object *jss)
+ 	obj_add_obj(jss, "Controllers", jctrls);
+ }
+ 
+-static void json_detail_list(nvme_root_t t)
++static void json_detail_list_v2(nvme_root_t t)
+ {
+ 	struct json_object *r = json_create_object();
+ 	struct json_object *jdev = json_create_array();
+@@ -4560,6 +4560,112 @@ static void json_detail_list(nvme_root_t t)
+ 	json_print(r);
+ }
+ 
++static void json_detail_list(nvme_root_t t)
++{
++	struct json_object *r = json_create_object();
++	struct json_object *jdev = json_create_array();
++
++	nvme_host_t h;
++	nvme_subsystem_t s;
++	nvme_ctrl_t c;
++	nvme_path_t p;
++	nvme_ns_t n;
++
++	nvme_for_each_host(t, h) {
++		struct json_object *hss = json_create_object();
++		struct json_object *jsslist = json_create_array();
++		const char *hostid;
++
++		obj_add_str(hss, "HostNQN", nvme_host_get_hostnqn(h));
++		hostid = nvme_host_get_hostid(h);
++		if (hostid)
++			obj_add_str(hss, "HostID", hostid);
++
++		nvme_for_each_subsystem(h, s) {
++			struct json_object *jss = json_create_object();
++			struct json_object *jctrls = json_create_array();
++			struct json_object *jnss = json_create_array();
++
++			obj_add_str(jss, "Subsystem", nvme_subsystem_get_name(s));
++			obj_add_str(jss, "SubsystemNQN", nvme_subsystem_get_nqn(s));
++
++			nvme_subsystem_for_each_ctrl(s, c) {
++				struct json_object *jctrl = json_create_object();
++				struct json_object *jnss = json_create_array();
++				struct json_object *jpaths = json_create_array();
++
++				obj_add_str(jctrl, "Controller", nvme_ctrl_get_name(c));
++				obj_add_str(jctrl, "Cntlid", nvme_ctrl_get_cntlid(c));
++				obj_add_str(jctrl, "SerialNumber", nvme_ctrl_get_serial(c));
++				obj_add_str(jctrl, "ModelNumber", nvme_ctrl_get_model(c));
++				obj_add_str(jctrl, "Firmware", nvme_ctrl_get_firmware(c));
++				obj_add_str(jctrl, "Transport", nvme_ctrl_get_transport(c));
++				obj_add_str(jctrl, "Address", nvme_ctrl_get_address(c));
++				obj_add_str(jctrl, "Slot", nvme_ctrl_get_phy_slot(c));
++
++				nvme_ctrl_for_each_ns(c, n) {
++					struct json_object *jns = json_create_object();
++					int lba = nvme_ns_get_lba_size(n);
++					uint64_t nsze = nvme_ns_get_lba_count(n) * lba;
++					uint64_t nuse = nvme_ns_get_lba_util(n) * lba;
++
++					obj_add_str(jns, "NameSpace", nvme_ns_get_name(n));
++					obj_add_str(jns, "Generic", nvme_ns_get_generic_name(n));
++					obj_add_int(jns, "NSID", nvme_ns_get_nsid(n));
++					obj_add_uint64(jns, "UsedBytes", nuse);
++					obj_add_uint64(jns, "MaximumLBA", nvme_ns_get_lba_count(n));
++					obj_add_uint64(jns, "PhysicalSize", nsze);
++					obj_add_int(jns, "SectorSize", lba);
++
++					array_add_obj(jnss, jns);
++				}
++				obj_add_obj(jctrl, "Namespaces", jnss);
++
++				nvme_ctrl_for_each_path(c, p) {
++					struct json_object *jpath = json_create_object();
++
++					obj_add_str(jpath, "Path", nvme_path_get_name(p));
++					obj_add_str(jpath, "ANAState", nvme_path_get_ana_state(p));
++
++					array_add_obj(jpaths, jpath);
++				}
++				obj_add_obj(jctrl, "Paths", jpaths);
++
++				array_add_obj(jctrls, jctrl);
++			}
++			obj_add_obj(jss, "Controllers", jctrls);
++
++			nvme_subsystem_for_each_ns(s, n) {
++				struct json_object *jns = json_create_object();
++
++				int lba = nvme_ns_get_lba_size(n);
++				uint64_t nsze = nvme_ns_get_lba_count(n) * lba;
++				uint64_t nuse = nvme_ns_get_lba_util(n) * lba;
++
++				obj_add_str(jns, "NameSpace", nvme_ns_get_name(n));
++				obj_add_str(jns, "Generic", nvme_ns_get_generic_name(n));
++				obj_add_int(jns, "NSID", nvme_ns_get_nsid(n));
++				obj_add_uint64(jns, "UsedBytes", nuse);
++				obj_add_uint64(jns, "MaximumLBA", nvme_ns_get_lba_count(n));
++				obj_add_uint64(jns, "PhysicalSize", nsze);
++				obj_add_int(jns, "SectorSize", lba);
++
++				array_add_obj(jnss, jns);
++			}
++			obj_add_obj(jss, "Namespaces", jnss);
++
++			array_add_obj(jsslist, jss);
++		}
++
++		obj_add_obj(hss, "Subsystems", jsslist);
++		array_add_obj(jdev, hss);
++	}
++
++	obj_add_array(r, "Devices", jdev);
++
++	json_print(r);
++}
++
+ static struct json_object *json_list_item_obj(nvme_ns_t n)
+ {
+ 	struct json_object *r = json_create_object();
+@@ -4622,9 +4728,12 @@ static void json_list_item(nvme_ns_t n)
+ 
+ static void json_print_list_items(nvme_root_t t)
+ {
+-	if (verbose_mode())
+-		json_detail_list(t);
+-	else
++	if (json_print_ops.flags & VERBOSE) {
++		if (nvme_cfg.output_format_ver == 2)
++			json_detail_list_v2(t);
++		else
++			json_detail_list(t);
++	} else
+ 		json_simple_list(t);
+ }
+ 
