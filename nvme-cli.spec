@@ -78,7 +78,7 @@ rm -rf %{buildroot}%{_pkgdocdir}/nvme
 %systemd_post nvmf-autoconnect.service
 %systemd_post nvmf-connect@.service
 %systemd_post nvmf-connect-nbft.service
-if [ -S /run/udev/control ]; then
+if [ -S /run/udev/control ] && [ -x /usr/bin/udevadm ]; then
     udevadm control --reload
     udevadm trigger
 fi
